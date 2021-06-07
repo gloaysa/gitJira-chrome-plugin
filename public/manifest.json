@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
-	"name": "Jira-Gitlab Integration",
-	"description": "Visualize the MR that belongs to the Jira Ticket in your current tab",
+	"name": "GitJira",
+	"description": "Display GitLab's MR info from its Jira Ticket",
 	"version": "1.0",
 	"options_page": "options.html",
 	"icons": {
@@ -18,5 +18,5 @@
 		"matches": ["https://*/jira/*"],
 		"js": ["js/content_script.js"]
 	}],
-	"permissions": ["storage", "activeTab"]
+	"permissions": ["storage"]
 }

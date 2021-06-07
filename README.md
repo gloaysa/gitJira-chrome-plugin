@@ -1,4 +1,6 @@
-# Jira-Gitlab Chrome Extension
+# GitJira Chrome Extension
+
+Display GitLab's MR info from its Jira Ticket
 
 ## Project Structure
 

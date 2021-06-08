@@ -31,7 +31,7 @@ chrome.storage.sync.get(
 		const match = location.href.match(`([^/]+)/?$`);
 		const jiraTicket = match ? match[1] : '';
 
-		if (!jiraTicket.match('WECOMMERCE')) return;
+		// if (!jiraTicket.match('WECOMMERCE')) return;
 
 		if (!jiraTicket) return;
 

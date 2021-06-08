@@ -14,9 +14,11 @@
 	"background": {
 		"page": "index.html"
 	},
-	"content_scripts": [{
-		"matches": ["https://*/jira/*"],
-		"js": ["js/content_script.js"]
-	}],
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["js/content_script.js"]
+		}
+	],
 	"permissions": ["storage"]
 }

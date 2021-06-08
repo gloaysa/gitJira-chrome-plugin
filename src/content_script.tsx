@@ -57,13 +57,13 @@ chrome.storage.sync.get(
 			<li class="item">
 				<div class="wrap">
 					<strong class="name">Reviewers:</strong>
-					<span class="value">${mergeRequest.reviewers.map((rev) => rev.name)?.join(', ')}</span>
+					<span class="value">${mergeRequest.reviewers?.map((rev) => rev?.name)?.join(', ')}</span>
 				</div>
 			</li>
 			<li class="item">
 				<div class="wrap">
 					<strong class="name">Merged by:</strong>
-					<span class="value">${mergeRequest.merged_by.name}</span>
+					<span class="value">${mergeRequest.merged_by?.name}</span>
 				</div>
 			</li>
 		</ul>

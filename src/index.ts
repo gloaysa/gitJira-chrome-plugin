@@ -15,5 +15,19 @@ chrome.browserAction.onClicked.addListener(() => {
 			}
 		}
 	);
+});
 
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  // location.href.match(`selectedIssue=([^&]+).*$`);
+  const match = tab.url.match(`selectedIssue=([^&]+).*$`) || tab.url.match(`([^/]+)/?$`);
+  const jiraTicket = match ? match[1] : '';
+
+  if (!jiraTicket.match('WECOMMERCE')) return;
+
+  if (!jiraTicket) return;
+
+	chrome.tabs.sendMessage(tabId, {
+		message: 'jira ticket changed',
+		ticket: jiraTicket,
+	});
 });

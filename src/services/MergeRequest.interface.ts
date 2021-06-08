@@ -1,3 +1,5 @@
+// https://docs.gitlab.com/ee/api/api_resources.html
+
 export interface MergeRequest {
   id: number;
   iid: number;

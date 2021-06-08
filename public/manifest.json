@@ -20,5 +20,5 @@
 			"js": ["js/content_script.js"]
 		}
 	],
-	"permissions": ["storage"]
+	"permissions": ["storage", "tabs"]
 }

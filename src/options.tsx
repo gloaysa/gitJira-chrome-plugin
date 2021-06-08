@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 const Options = () => {
 	const [token, setToken] = useState<string>('');
-	const [projectIds, setProjectId] = useState<string[]>([]);
+	const [projectIds, setProjectId] = useState<string>('');
 	const [baseUrl, setBaseUrl] = useState<string>('');
 
 	const [status, setStatus] = useState<string>('');
@@ -13,7 +13,7 @@ const Options = () => {
 	useEffect(() => {
 		chrome.storage.sync.get(
 			['token', 'projectIds', 'baseUrl'],
-			(key: { token: string, projectIds: string[] , baseUrl: string}) => {
+			(key: { token: string, projectIds: string, baseUrl: string}) => {
 				if (!token) {
 					setToken(key.token);
 					setProjectId(key.projectIds);
@@ -136,7 +136,7 @@ const Options = () => {
 											type="text"
 											id="secret"
 											placeholder="1466"
-											onChange={(event) => setProjectId(event.target.value?.split(', '))}
+											onChange={(event) => setProjectId(event.target.value)}
 											value={projectIds}
 										/>
 										<p className="help">You can add multiple projects separating them by a coma: <code>1919, 1920</code></p>

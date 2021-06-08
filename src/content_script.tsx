@@ -26,7 +26,7 @@ async function getMrInfo(jiraTicket: string): Promise<MergeRequest[]> {
 
 chrome.storage.sync.get(
 	['token', 'projectIds', 'baseUrl'],
-	async (key: { token: string; projectIds: string[]; baseUrl: string }) => {
+	async (key: { token: string; projectIds: string; baseUrl: string }) => {
 		// location.href.match(`selectedIssue=([^&]+).*$`);
 		const match = location.href.match(`([^/]+)/?$`);
 		const jiraTicket = match ? match[1] : '';
@@ -37,7 +37,7 @@ chrome.storage.sync.get(
 
 		if (!token) {
 			token = key.token;
-			projectIds = key.projectIds;
+			projectIds = key.projectIds?.replace(/\s/g, "")?.split(',');
 			baseUrl = key.baseUrl;
 		}
 

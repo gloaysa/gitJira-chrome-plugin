@@ -45,11 +45,11 @@ const Options = () => {
 		}
 		return (
 			<div className="field is-centered">
-				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!token}>
+				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!token || !projectId || !baseUrl}>
 					Save options
 				</button>
 
-				<p className="help">Secret y contraseña quedarán guardadas en tu navegador, yo no almaceno ningún dato</p>
+				<p className="help">All this data is stored in your browser.</p>
 			</div>
 		);
 	};
@@ -75,15 +75,19 @@ const Options = () => {
 									<div className="field is-centered">
 
 										<p>
-											Para usarlo, ve a la página de iniciar sesión del servicio que te pide OTP y simplemente clica en el
-											botón de la extensión, colocará la contraseña e iniciará sesión automáticamente.
-											<br />
-											Si has elegido que se guarde en el portapapeles, podrás usar la extensión en cualquier página, sin
-											necesidad de que exista un formulario.
+											This plugin allows you to ...
 										</p>
 
 										<hr />
 
+										<img src="../images/gitlab-token.png" alt="GitLab - Jira Integration Configuration Icon" />
+
+										<p>
+											To get your token, login to GitLab / Preferences / Access Tokens and create a new token with "read_api" access.
+											You can name it whatever you want it. Then, paste your token below.
+										</p>
+
+										<br/>
 
 										<label className="label">Token</label>
 										<div className="control has-icons-right">
@@ -120,6 +124,10 @@ const Options = () => {
 									</div>
 
 									<br />
+
+									<img src="../images/gitlab-projectid.png" alt="GitLab - Jira Integration Configuration Icon" />
+
+									<p>The project ID can be found at the Details repository page in Gitlab, under the name.</p>
 
 									<label className="label">Gitlab Project Id</label>
 									<div className="control has-icons-right">
@@ -164,7 +172,7 @@ const Options = () => {
 					</p>
 					<div className="tags has-addons level-item">
 						<span className="tag is-rounded is-info">last update</span>
-						<span className="tag is-rounded">May, 2021</span>
+						<span className="tag is-rounded">Jun, 2021</span>
 					</div>
 				</div>
 			</footer>

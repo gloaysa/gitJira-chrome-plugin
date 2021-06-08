@@ -1,4 +1,4 @@
-import { MergeRequest } from "./lib/MergeRequest.interface";
+import { MergeRequest } from './lib/MergeRequest.interface';
 
 let token = '';
 let projectId = '';
@@ -6,11 +6,11 @@ let baseUrl = '';
 
 async function getMrInfo(jiraTicket: string): Promise<MergeRequest[]> {
 	const baseApi = 'api/v4/projects';
-	const params = `search=${jiraTicket}&in=title`
+	const params = `search=${jiraTicket}&in=title`;
 	const headers = new Headers();
 
-	headers.append("Content-Type", "application/json");
-	headers.append("Authorization", `Bearer ${token}`);
+	headers.append('Content-Type', 'application/json');
+	headers.append('Authorization', `Bearer ${token}`);
 
 	const response = await fetch(`https://${baseUrl}/${baseApi}/${projectId}/merge_requests?${params}`, { headers });
 	return response.json();
@@ -18,11 +18,10 @@ async function getMrInfo(jiraTicket: string): Promise<MergeRequest[]> {
 
 chrome.storage.sync.get(
 	['token', 'projectId', 'baseUrl'],
-	async (key: { token: string, projectId: string, baseUrl: string }) => {
+	async (key: { token: string; projectId: string; baseUrl: string }) => {
 		const jiraTicket = location.href.match(`([^/]+)/?$`)[1];
-		if (!jiraTicket) {
-			return;
-		}
+
+		if (!jiraTicket) return;
 
 		if (!token) {
 			token = key.token || '';
@@ -33,10 +32,10 @@ chrome.storage.sync.get(
 		const mergeRequests: MergeRequest[] = await getMrInfo(jiraTicket);
 		const mergeRequest: MergeRequest = mergeRequests[0];
 
+		if (!mergeRequest) return;
+
 		const content = document.getElementById('stalker');
 		const app: HTMLDivElement = document.createElement('div');
-
-		console.log('hola', mergeRequest)
 
 		app.innerHTML = `
 <div class="issue-body-content">
@@ -58,7 +57,7 @@ chrome.storage.sync.get(
 			<li class="item">
 				<div class="wrap">
 					<strong class="name">Reviewers:</strong>
-					<span class="value">${mergeRequest.reviewers.map(rev => rev.name)?.join(', ')}</span>
+					<span class="value">${mergeRequest.reviewers.map((rev) => rev.name)?.join(', ')}</span>
 				</div>
 			</li>
 			<li class="item">
@@ -73,15 +72,16 @@ chrome.storage.sync.get(
 	<br>
 	
 	<div class="aui-buttons">
-		<a class="button aui-style-default aui-button aui-button-primary" target="_blank" href="${mergeRequest.web_url}">GitLab MR</a>
+		<a class="button aui-style-default aui-button aui-button-primary" target="_blank" href="${
+			mergeRequest.web_url
+		}">GitLab MR</a>
 	</div>
 	
 	<hr>
 	
-</div>`
+</div>`;
 
 		app.id = 'root';
 		content.parentNode.insertBefore(app, content.nextSibling);
-
 	}
 );

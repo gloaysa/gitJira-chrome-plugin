@@ -12,17 +12,26 @@ async function getMrInfo(jiraTicket: string): Promise<MergeRequest[]> {
 	headers.append('Content-Type', 'application/json');
 	headers.append('Authorization', `Bearer ${token}`);
 
-	const responses = await Promise.all(projectIds.map((id) => fetch(`https://${baseUrl}/${baseApi}/${id}/merge_requests?${params}`, { headers })))
-	const response = responses.find((repo) => repo.status === 200);
+	try {
+		const responses = await Promise.all(projectIds.map((id) => fetch(`https://${baseUrl}/${baseApi}/${id}/merge_requests?${params}`, { headers })))
+		const response = responses.find((repo) => repo.status === 200);
 
-	return response.json();
+		if (!response) return [];
+
+		return response?.json();
+	} catch (e) {
+
+	}
 }
 
 chrome.storage.sync.get(
 	['token', 'projectIds', 'baseUrl'],
 	async (key: { token: string; projectIds: string[]; baseUrl: string }) => {
-		const match = location.href.match(`selectedIssue=([^&]+).*$`) || location.href.match(`([^/]+)/?$`);
+		// location.href.match(`selectedIssue=([^&]+).*$`);
+		const match = location.href.match(`([^/]+)/?$`);
 		const jiraTicket = match ? match[1] : '';
+
+		if (!jiraTicket.match('WECOMMERCE')) return;
 
 		if (!jiraTicket) return;
 

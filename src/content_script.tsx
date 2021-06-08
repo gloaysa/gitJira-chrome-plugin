@@ -1,8 +1,8 @@
 import { MergeRequest } from './lib/MergeRequest.interface';
 
-let token = '';
-let projectId = '';
-let baseUrl = '';
+let token: string;
+let projectIds: string[];
+let baseUrl: string;
 
 async function getMrInfo(jiraTicket: string): Promise<MergeRequest[]> {
 	const baseApi = 'api/v4/projects';
@@ -12,21 +12,24 @@ async function getMrInfo(jiraTicket: string): Promise<MergeRequest[]> {
 	headers.append('Content-Type', 'application/json');
 	headers.append('Authorization', `Bearer ${token}`);
 
-	const response = await fetch(`https://${baseUrl}/${baseApi}/${projectId}/merge_requests?${params}`, { headers });
+	const responses = await Promise.all(projectIds.map((id) => fetch(`https://${baseUrl}/${baseApi}/${id}/merge_requests?${params}`, { headers })))
+	const response = responses.find((repo) => repo.status === 200);
+
 	return response.json();
 }
 
 chrome.storage.sync.get(
-	['token', 'projectId', 'baseUrl'],
-	async (key: { token: string; projectId: string; baseUrl: string }) => {
-		const jiraTicket = location.href.match(`([^/]+)/?$`)[1];
+	['token', 'projectIds', 'baseUrl'],
+	async (key: { token: string; projectIds: string[]; baseUrl: string }) => {
+		const match = location.href.match(`selectedIssue=([^&]+).*$`) || location.href.match(`([^/]+)/?$`);
+		const jiraTicket = match ? match[1] : '';
 
 		if (!jiraTicket) return;
 
 		if (!token) {
-			token = key.token || '';
-			projectId = key.projectId || '';
-			baseUrl = key.baseUrl || '';
+			token = key.token;
+			projectIds = key.projectIds;
+			baseUrl = key.baseUrl;
 		}
 
 		const mergeRequests: MergeRequest[] = await getMrInfo(jiraTicket);
@@ -34,7 +37,10 @@ chrome.storage.sync.get(
 
 		if (!mergeRequest) return;
 
-		const content = document.getElementById('stalker');
+		let content = document.getElementById('stalker') || document.getElementById('ghx-detail-issue');
+
+		if (!content) return;
+
 		const app: HTMLDivElement = document.createElement('div');
 
 		app.innerHTML = `

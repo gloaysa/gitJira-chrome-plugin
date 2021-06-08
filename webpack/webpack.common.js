@@ -8,6 +8,7 @@ module.exports = {
 		options: path.join(srcDir, 'options.tsx'),
 		index: path.join(srcDir, 'index.ts'),
 		content_script: path.join(srcDir, 'content_script.tsx'),
+		addon: path.join(srcDir, 'addon.tsx'),
 	},
 	output: {
 		path: path.join(__dirname, '../dist/js'),

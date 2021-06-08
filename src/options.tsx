@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 const Options = () => {
 	const [token, setToken] = useState<string>('');
-	const [projectId, setProjectId] = useState<string>('');
+	const [projectIds, setProjectId] = useState<string[]>([]);
 	const [baseUrl, setBaseUrl] = useState<string>('');
 
 	const [status, setStatus] = useState<string>('');
@@ -12,12 +12,12 @@ const Options = () => {
 
 	useEffect(() => {
 		chrome.storage.sync.get(
-			['token', 'projectId', 'baseUrl'],
-			(key: { token: string, projectId: string , baseUrl: string}) => {
+			['token', 'projectIds', 'baseUrl'],
+			(key: { token: string, projectIds: string[] , baseUrl: string}) => {
 				if (!token) {
-					setToken(key.token || '');
-					setProjectId(key.projectId || '');
-					setBaseUrl(key.baseUrl || '')
+					setToken(key.token);
+					setProjectId(key.projectIds);
+					setBaseUrl(key.baseUrl)
 				}
 			}
 		);
@@ -25,7 +25,7 @@ const Options = () => {
 
 	const saveOptions = () => {
 		// Saves options to chrome.storage.sync.
-		chrome.storage.sync.set({ token, projectId, baseUrl }, () => {
+		chrome.storage.sync.set({ token, projectIds, baseUrl }, () => {
 			let timeoutId;
 			const message = {setting: 'saved'};
 
@@ -45,7 +45,7 @@ const Options = () => {
 		}
 		return (
 			<div className="field is-centered">
-				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!token || !projectId || !baseUrl}>
+				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!token || !projectIds || !baseUrl}>
 					Save options
 				</button>
 
@@ -136,9 +136,10 @@ const Options = () => {
 											type="text"
 											id="secret"
 											placeholder="1466"
-											onChange={(event) => setProjectId(event.target.value)}
-											value={projectId}
+											onChange={(event) => setProjectId(event.target.value?.split(', '))}
+											value={projectIds}
 										/>
+										<p className="help">You can add multiple projects separating them by a coma: <code>1919, 1920</code></p>
 									</div>
 
 									<br />

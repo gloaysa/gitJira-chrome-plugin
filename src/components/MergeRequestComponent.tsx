@@ -58,13 +58,13 @@ const MergeRequestComponent: React.FunctionComponent<Props> = ({ config, jiraTic
 
 	return (
 		<JiraModuleComponent moduleName="GitLab Info">
-			<div className="field-ignore-highlight editable-field inactive">
+			<div className="field-ignore-highlight editable-field inactive" style={styles.description}>
 				<ReactMarkdown className="user-content-block">{mergeRequest.description}</ReactMarkdown>
 			</div>
 			<br />
 
 			<div className="mod-content">
-				<ul className="property-list two-cols">{displayList()}</ul>
+				<ul className="property-list">{displayList()}</ul>
 			</div>
 
 			<div style={styles.button_wrapper}>
@@ -87,6 +87,10 @@ const styles = {
 	button_wrapper: {
 		display: 'flex',
 		justifyContent: 'flex-end',
+	},
+	description: {
+		maxHeight: '400px',
+		overflow: 'auto'
 	}
 }
 

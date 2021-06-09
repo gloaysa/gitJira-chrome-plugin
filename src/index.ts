@@ -3,6 +3,8 @@
  * is installed. You can read more information in https://developer.chrome.com/docs/extensions/mv2/background_pages/
  */
 
+let currentTabId: number;
+
 /**
  * This function listen for a click on the plugin icon.
  * If the user clicks it, we redirect them to the Options page.
@@ -19,14 +21,19 @@ chrome.browserAction.onClicked.addListener(() => {
  *    inside the current tab, we load our app on it.
  */
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+	currentTabId = tabId;
 	if (changeInfo.status === 'complete' && tab.url.includes('http')) {
-		chrome.tabs.executeScript(tabId, { file: './app-injector.js' }, function () {
-			chrome.tabs.executeScript(tabId, { file: './app.js' }, function () {
-				console.log('INJECTED AND EXECUTED');
-			});
-		});
+		chrome.tabs.executeScript(tabId, { file: './app-injector.js' });
 	}
 });
+
+chrome.runtime.onMessage.addListener((message) => {
+	if (message === 'app ready') {
+		chrome.tabs.executeScript(currentTabId, { file: './app.js' }, function () {
+			console.log('INJECTED AND EXECUTED');
+		});
+	}
+})
 
 /*
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {

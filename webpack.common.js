@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { TsconfigPathsPlugin } = require("tsconfig-paths-webpack-plugin");
+const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
 	devServer: {
@@ -16,7 +16,7 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist'),
+		path: path.resolve(__dirname, 'plugin'),
 	},
 	module: {
 		rules: [
@@ -50,7 +50,7 @@ module.exports = {
 	},
 	resolve: {
 		extensions: ['.ts', '.tsx', '.js'],
-		plugins: [new TsconfigPathsPlugin({configFile: "./tsconfig.json"})],
+		plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
@@ -63,6 +63,6 @@ module.exports = {
 				{ from: 'src/manifest.json', to: '[name].[ext]' },
 				{ from: 'src/assets/images/*.png', to: 'assets/images/[name].[ext]' },
 			],
-		})
+		}),
 	],
 };

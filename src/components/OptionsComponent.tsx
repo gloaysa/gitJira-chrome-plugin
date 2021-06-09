@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StorageKeys } from '@models/storage-keys.interface';
 
 interface OptionsComponentProps extends StorageKeys {
 	handleSave: (params: StorageKeys, callback?: () => void) => void;
 }
 
-const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({token, projectIds, baseUrl, handleSave}) => {
+const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
+	token,
+	projectIds,
+	baseUrl,
+	handleSave,
+}) => {
 	const [newToken, setToken] = useState<string>(token);
 	const [newProjectIds, setProjectId] = useState<string>(projectIds);
 	const [newBaseUrl, setBaseUrl] = useState<string>(baseUrl);
@@ -33,7 +38,11 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({token
 		}
 		return (
 			<div className="field is-centered">
-				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!newToken || !newProjectIds || !newBaseUrl}>
+				<button
+					className="button is-info is-medium is-fullwidth"
+					onClick={saveOptions}
+					disabled={!newToken || !newProjectIds || !newBaseUrl}
+				>
 					Save options
 				</button>
 
@@ -61,21 +70,18 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({token
 									</div>
 
 									<div className="field is-centered">
-
-										<p>
-											This plugin allows you to ...
-										</p>
+										<p>This plugin allows you to ...</p>
 
 										<hr />
 
 										<img src="assets/images/gitlab-token.png" alt="GitLab - Jira Integration Configuration Icon" />
 
 										<p>
-											To get your token, login to GitLab / Preferences / Access Tokens and create a new token with "read_api" access.
-											You can name it whatever you want it. Then, paste your token below.
+											To get your token, login to GitLab / Preferences / Access Tokens and create a new token with
+											"read_api" access. You can name it whatever you want it. Then, paste your token below.
 										</p>
 
-										<br/>
+										<br />
 
 										<label className="label">Token</label>
 										<div className="control has-icons-right">
@@ -83,7 +89,7 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({token
 												className="input"
 												type={secretShow ? 'text' : 'password'}
 												id="secret"
-												placeholder="SECRET"
+												placeholder="Your personal token"
 												onChange={(event) => setToken(event.target.value)}
 												value={newToken}
 											/>
@@ -127,7 +133,9 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({token
 											onChange={(event) => setProjectId(event.target.value)}
 											value={newProjectIds}
 										/>
-										<p className="help">You can add multiple projects separating them by a coma: <code>1919, 1920</code></p>
+										<p className="help">
+											You can add multiple projects separating them by a coma: <code>1919, 1920</code>
+										</p>
 									</div>
 
 									<br />

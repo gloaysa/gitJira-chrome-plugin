@@ -1,13 +1,17 @@
-# GitJira Chrome Extension
+# ![Logo](src/assets/images/icon-50.png) GitJira Chrome Extension
 
 Display GitLab's MR info from its Jira Ticket
 
 ## Project Structure
 
-* src/typescript: TypeScript source files
-* src/assets: static files
-* dist: Chrome Extension directory
-* dist/js: Generated JavaScript files
+- src: Source files and app main file
+  - ./components: React Components
+  - ./pages: available pages to display
+  - ./assets: static files
+  - ./models: available interfaces
+  - ./services: app services
+  - ./utils: different functions and tools
+- dist: Chrome Extension directory
 
 ## Setup
 
@@ -29,7 +33,8 @@ npm run watch
 
 ## Load extension to chrome
 
-Load `dist` directory
+Load newly created `plugin` directory
 
 ## Test
+
 `npx jest` or `npm run test`

@@ -1,19 +1,19 @@
 {
-    "compilerOptions": {
-        "strict": false,
-        "module": "commonjs",
-        "target": "es6",
-        "esModuleInterop": true,
-        "sourceMap": true,
-        "rootDir": "src",
-        "outDir": "./dist/",
-        "noEmitOnError": true,
-        "jsx": "react",
-        "typeRoots": [ "node_modules/@types" ],
-        "baseUrl": "src",
-        "paths": {
-            "@components/*": ["components/*"],
-            "@models/*": ["models/*"]
-        },
-    },
+	"compilerOptions": {
+		"strict": false,
+		"module": "commonjs",
+		"target": "es6",
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"rootDir": "src",
+		"outDir": "./plugin/",
+		"noEmitOnError": true,
+		"jsx": "react",
+		"typeRoots": ["node_modules/@types"],
+		"baseUrl": "src",
+		"paths": {
+			"@components/*": ["components/*"],
+			"@models/*": ["models/*"]
+		}
+	}
 }

@@ -1,5 +1,6 @@
 import { MergeRequest } from "../services/MergeRequest.interface";
 import { getMrInfo } from "../services/gitlab.service";
+import { StorageKeys } from '@models/storage-keys.interface';
 
 
 let token: string;
@@ -9,12 +10,12 @@ let baseUrl: string;
 export function Addon(currentTicket) {
   chrome.storage.sync.get(
     ['token', 'projectIds', 'baseUrl'],
-    async (key: { token: string; projectIds: string; baseUrl: string }) => {
+    async (keys: StorageKeys) => {
 
       if (!token) {
-        token = key.token;
-        projectIds = key.projectIds?.replace(/\s/g, '')?.split(',');
-        baseUrl = key.baseUrl;
+        token = keys.token;
+        projectIds = keys.projectIds?.replace(/\s/g, '')?.split(',');
+        baseUrl = keys.baseUrl;
       }
 
       const mergeRequests: MergeRequest[] = await getMrInfo(currentTicket, token, baseUrl, projectIds);

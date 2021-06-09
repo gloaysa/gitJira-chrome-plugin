@@ -1,0 +1,22 @@
+{
+	"manifest_version": 2,
+	"name": "GitJira",
+	"description": "Display GitLab's MR info from its Jira Ticket",
+	"version": "1.0",
+	"icons": {
+		"48": "assets/images/icon-50.png",
+		"128": "assets/images/icon-128.png"
+	},
+	"browser_action": {
+		"default_title": "Jira Gitlab Integration"
+	},
+	"background": {
+		"scripts": ["./index.js"]
+	},
+	"options_page": "./options.html",
+	"permissions": [
+		"storage",
+		"tabs",
+		"<all_urls>"
+	]
+}

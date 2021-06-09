@@ -1,12 +1,20 @@
 import React from 'react';
 
-const MergeRequestComponent = () => {
-
+function Foreground() {
+  console.log('hola que tal')
   return (
-    <>
-      <h1>HOLA QUE TAL</h1>
-    </>
-  );
-};
+  // @ts-ignore
+    <div style={styles.main}>
+      <h1>Chrome Ext - Foreground</h1>
+    </div>
+  )
+}
 
-export default MergeRequestComponent;
+const styles = {
+  main: {
+    fontSize: '80px',
+    pointerEvents: 'none'
+  }
+}
+
+export default Foreground;

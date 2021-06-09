@@ -1,40 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { StorageKeys } from '@models/storage-keys.interface';
 
-const Options = () => {
-	const [token, setToken] = useState<string>('');
-	const [projectIds, setProjectId] = useState<string>('');
-	const [baseUrl, setBaseUrl] = useState<string>('');
+interface OptionsComponentProps extends StorageKeys {
+	handleSave: (params: StorageKeys, callback?: () => void) => void;
+}
+
+const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({token, projectIds, baseUrl, handleSave}) => {
+	const [newToken, setToken] = useState<string>(token);
+	const [newProjectIds, setProjectId] = useState<string>(projectIds);
+	const [newBaseUrl, setBaseUrl] = useState<string>(baseUrl);
 
 	const [status, setStatus] = useState<string>('');
 
 	const [secretShow, setSecretShow] = useState<boolean>(false);
 
-	useEffect(() => {
-		chrome.storage.sync.get(
-			['token', 'projectIds', 'baseUrl'],
-			(key: { token: string, projectIds: string, baseUrl: string}) => {
-				if (!token) {
-					setToken(key.token);
-					setProjectId(key.projectIds);
-					setBaseUrl(key.baseUrl)
-				}
-			}
-		);
-	});
-
 	const saveOptions = () => {
-		// Saves options to chrome.storage.sync.
-		chrome.storage.sync.set({ token, projectIds, baseUrl }, () => {
+		handleSave({ token: newToken, projectIds: newProjectIds, baseUrl: newBaseUrl }, () => {
 			let timeoutId;
-			const message = {setting: 'saved'};
 
-			chrome.runtime.sendMessage(message, () => {
-				setStatus('Options saved.');
-				timeoutId = setTimeout(() => {
-					setStatus(undefined);
-				}, 1000);
-			});
+			setStatus('Options saved.');
+			timeoutId = setTimeout(() => {
+				setStatus(undefined);
+			}, 1000);
+
 			return () => clearTimeout(timeoutId);
 		});
 	};
@@ -45,7 +33,7 @@ const Options = () => {
 		}
 		return (
 			<div className="field is-centered">
-				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!token || !projectIds || !baseUrl}>
+				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!newToken || !newProjectIds || !newBaseUrl}>
 					Save options
 				</button>
 
@@ -65,7 +53,7 @@ const Options = () => {
 								<div className="card-content">
 									<div className="columns is-mobile is-centered is-vcentered">
 										<div className="column is-narrow">
-											<img src="../images/icon-50.png" alt="GitLab - Jira Integration Configuration Icon" />
+											<img src="assets/images/icon-50.png" alt="GitLab - Jira Integration Configuration Icon" />
 										</div>
 										<div className="column is-narrow">
 											<span className="title">GitLab - Jira Integration Configuration</span>
@@ -80,7 +68,7 @@ const Options = () => {
 
 										<hr />
 
-										<img src="../images/gitlab-token.png" alt="GitLab - Jira Integration Configuration Icon" />
+										<img src="assets/images/gitlab-token.png" alt="GitLab - Jira Integration Configuration Icon" />
 
 										<p>
 											To get your token, login to GitLab / Preferences / Access Tokens and create a new token with "read_api" access.
@@ -97,7 +85,7 @@ const Options = () => {
 												id="secret"
 												placeholder="SECRET"
 												onChange={(event) => setToken(event.target.value)}
-												value={token}
+												value={newToken}
 											/>
 											<span
 												className="icon is-small is-right"
@@ -119,13 +107,13 @@ const Options = () => {
 											id="secret"
 											placeholder="git.example.com (without https://)"
 											onChange={(event) => setBaseUrl(event.target.value)}
-											value={baseUrl}
+											value={newBaseUrl}
 										/>
 									</div>
 
 									<br />
 
-									<img src="../images/gitlab-projectid.png" alt="GitLab - Jira Integration Configuration Icon" />
+									<img src="assets/images/gitlab-projectid.png" alt="GitLab - Jira Integration Configuration Icon" />
 
 									<p>The project ID can be found at the Details repository page in Gitlab, under the name.</p>
 
@@ -137,7 +125,7 @@ const Options = () => {
 											id="secret"
 											placeholder="1466"
 											onChange={(event) => setProjectId(event.target.value)}
-											value={projectIds}
+											value={newProjectIds}
 										/>
 										<p className="help">You can add multiple projects separating them by a coma: <code>1919, 1920</code></p>
 									</div>
@@ -181,9 +169,4 @@ const Options = () => {
 	);
 };
 
-ReactDOM.render(
-	<React.StrictMode>
-		<Options />
-	</React.StrictMode>,
-	document.getElementById('root')
-);
+export default OptionsComponent;

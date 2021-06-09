@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StorageKeys } from '@models/storage-keys.interface';
+import { UserOptions } from '../services/user-options.service';
 
 interface OptionsComponentProps {
 	handleSaveConfiguration: (params: StorageKeys, callback?: () => void) => void;
@@ -14,13 +15,14 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 	const [projectIds, setProjectId] = useState<string>(config.projectIds);
 	const [baseUrl, setBaseUrl] = useState<string>(config.baseUrl);
 	const [jiraPrefix, setJiraPrefix] = useState<string>(config.jiraPrefix);
+	const [userOptions, setUserOptions] = useState<string[]>(config.userOptions || []);
 
 	const [status, setStatus] = useState<string>('');
 
 	const [secretShow, setSecretShow] = useState<boolean>(false);
 
 	const saveConfiguration = () => {
-		handleSaveConfiguration({ token, projectIds, baseUrl, jiraPrefix }, () => {
+		handleSaveConfiguration({ token, projectIds, baseUrl, jiraPrefix, userOptions }, () => {
 			let timeoutId;
 
 			setStatus('Options saved.');
@@ -29,6 +31,33 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 			}, 1000);
 
 			return () => clearTimeout(timeoutId);
+		});
+	};
+
+	const addOrRemoveOption = (id: string) => {
+		if (userOptions?.some((option) => option === id)) {
+			console.log('remove')
+			return setUserOptions(userOptions?.filter(option => option !== id));
+		}
+		setUserOptions([...userOptions, id]);
+	};
+
+	const displayUserOptions = () => {
+		return Object.keys(UserOptions).map((option) => {
+			return (
+				<div className="field is-centered" key={UserOptions[option].id}>
+					<div className="control">
+						<label className="checkbox">
+							<input
+								type="checkbox"
+								onChange={() => addOrRemoveOption(UserOptions[option].id)}
+								checked={userOptions?.some((optionId) => optionId === UserOptions[option].id)}
+							/>{' '}
+							{UserOptions[option].label}
+						</label>
+					</div>
+				</div>
+			);
 		});
 	};
 
@@ -153,6 +182,10 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 											You can add multiple projects separating them by a coma: <code>1919, 1920</code>
 										</p>
 									</div>
+
+									<br />
+
+									{displayUserOptions()}
 
 									<br />
 

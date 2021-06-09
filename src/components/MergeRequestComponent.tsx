@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import { getMrInfo } from '../services/gitlab.service';
-import { Option } from '@models/option.interface';
 import { MergeRequest } from '@models/merge-request.interface';
 import JiraModuleComponent from '@components/JiraModuleComponent';
+import { getUserOptions } from '../services/user-options.service';
+import { Option } from '@models/option.interface';
 
 interface Props {
 	config: {
@@ -18,6 +19,7 @@ interface Props {
 const MergeRequestComponent: React.FunctionComponent<Props> = ({ config, jiraTicket }) => {
 	const { token, baseUrl, projectIds } = config;
 	const [mergeRequest, setMergeRequest] = useState<MergeRequest>(null);
+	const [userOptions, setUserOptions] = useState<Option[]>(null);
 
 	useEffect(() => {
 		const getMergeRequest = async () => {
@@ -27,22 +29,20 @@ const MergeRequestComponent: React.FunctionComponent<Props> = ({ config, jiraTic
 		getMergeRequest();
 	}, [jiraTicket]);
 
+	useEffect(() => {
+		if (mergeRequest) {
+			const getOptions = async () => {
+				const options: Option[] = await getUserOptions(mergeRequest);
+				setUserOptions(options);
+			}
+			getOptions();
+		}
+	}, [mergeRequest])
+
 	if (!mergeRequest) return <></>;
 
-	const properties: Option[] = [
-		{ label: 'Author', value: mergeRequest.author.name },
-		{
-			label: 'Status',
-			value: `${mergeRequest.state.toUpperCase()} ${new Date(mergeRequest.merged_at)?.toLocaleDateString()}`,
-		},
-		{ label: 'Reviewers', value: mergeRequest.reviewers?.map((rev) => rev?.name)?.join(', ') },
-		{ label: 'Merged by', value: mergeRequest.merged_by?.name },
-		{ label: 'Upvotes', value: mergeRequest.upvotes },
-		{ label: 'Downvotes', value: mergeRequest.downvotes },
-	];
-
 	const displayList = (): JSX.Element[] => {
-		return properties.map(({ label, value }, i) => {
+		return userOptions?.map(({ label, value }, i) => {
 			if (value) {
 				return (
 					<li className="item" key={i}>

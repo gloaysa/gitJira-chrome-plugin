@@ -3,4 +3,5 @@ export interface StorageKeys {
 	projectIds: string;
 	baseUrl: string;
 	jiraPrefix: string;
+	userOptions?: string[];
 }

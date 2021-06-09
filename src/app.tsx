@@ -9,25 +9,24 @@ const app = document.querySelector('#gitjira-app');
 let token: string;
 let projectIds: string[];
 let baseUrl: string;
+let jiraPrefix: string;
 
-chrome.storage.sync.get(['token', 'projectIds', 'baseUrl'], async (keys: StorageKeys) => {
+chrome.storage.sync.get(['token', 'projectIds', 'baseUrl', 'jiraPrefix'], async (keys: StorageKeys) => {
 	if (!token) {
 		token = keys.token;
 		projectIds = keys.projectIds?.replace(/\s/g, '')?.split(',');
 		baseUrl = keys.baseUrl;
+		jiraPrefix = keys.jiraPrefix;
 	}
+
+	const config = { token, projectIds, baseUrl };
 
 	const url = location.href;
 
 	const match = url.match(`selectedIssue=([^&]+).*$`) || url.match(`([^/]+)/?$`);
 	const jiraTicket = match ? match[1] : '';
 
-	// if (!jiraTicket || !jiraTicket.match('WECOMMERCE')) return;
-	if (!jiraTicket) return;
+	if (!jiraTicket || !jiraTicket.match(jiraPrefix)) return;
 
-	if (app)
-		render(
-			<MergeRequestComponent token={token} projectIds={projectIds} baseUrl={baseUrl} jiraTicket={jiraTicket} />,
-			app
-		);
+	if (app) render(<MergeRequestComponent config={config} jiraTicket={jiraTicket} />, app);
 });

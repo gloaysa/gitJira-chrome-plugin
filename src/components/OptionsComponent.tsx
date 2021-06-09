@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { StorageKeys } from '@models/storage-keys.interface';
 
-interface OptionsComponentProps extends StorageKeys {
-	handleSave: (params: StorageKeys, callback?: () => void) => void;
+interface OptionsComponentProps {
+	handleSaveConfiguration: (params: StorageKeys, callback?: () => void) => void;
+	config: StorageKeys;
 }
 
 const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
-	token,
-	projectIds,
-	baseUrl,
-	handleSave,
+	config,
+	handleSaveConfiguration,
 }) => {
-	const [newToken, setToken] = useState<string>(token);
-	const [newProjectIds, setProjectId] = useState<string>(projectIds);
-	const [newBaseUrl, setBaseUrl] = useState<string>(baseUrl);
+	const [token, setToken] = useState<string>(config.token);
+	const [projectIds, setProjectId] = useState<string>(config.projectIds);
+	const [baseUrl, setBaseUrl] = useState<string>(config.baseUrl);
+	const [jiraPrefix, setJiraPrefix] = useState<string>(config.jiraPrefix);
 
 	const [status, setStatus] = useState<string>('');
 
 	const [secretShow, setSecretShow] = useState<boolean>(false);
 
-	const saveOptions = () => {
-		handleSave({ token: newToken, projectIds: newProjectIds, baseUrl: newBaseUrl }, () => {
+	const saveConfiguration = () => {
+		handleSaveConfiguration({ token, projectIds, baseUrl, jiraPrefix }, () => {
 			let timeoutId;
 
 			setStatus('Options saved.');
@@ -40,8 +40,8 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 			<div className="field is-centered">
 				<button
 					className="button is-info is-medium is-fullwidth"
-					onClick={saveOptions}
-					disabled={!newToken || !newProjectIds || !newBaseUrl}
+					onClick={saveConfiguration}
+					disabled={!token || !projectIds || !baseUrl}
 				>
 					Save options
 				</button>
@@ -91,7 +91,7 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 												id="secret"
 												placeholder="Your personal token"
 												onChange={(event) => setToken(event.target.value)}
-												value={newToken}
+												value={token}
 											/>
 											<span
 												className="icon is-small is-right"
@@ -113,8 +113,24 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 											id="secret"
 											placeholder="git.example.com (without https://)"
 											onChange={(event) => setBaseUrl(event.target.value)}
-											value={newBaseUrl}
+											value={baseUrl}
 										/>
+									</div>
+
+									<br />
+
+									<label className="label">Jira Prefix</label>
+									<div className="control has-icons-right">
+										<input
+											className="input"
+											type="text"
+											placeholder="JIRA"
+											onChange={(event) => setJiraPrefix(event.target.value)}
+											value={jiraPrefix}
+										/>
+										<p className="help">
+											The Jira project code, it looks like: <code>JIRA-11</code>, put here the name without the dash or numbers.
+										</p>
 									</div>
 
 									<br />
@@ -131,7 +147,7 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 											id="secret"
 											placeholder="1466"
 											onChange={(event) => setProjectId(event.target.value)}
-											value={newProjectIds}
+											value={projectIds}
 										/>
 										<p className="help">
 											You can add multiple projects separating them by a coma: <code>1919, 1920</code>

@@ -3,21 +3,12 @@
  * is installed. You can read more information in https://developer.chrome.com/docs/extensions/mv2/background_pages/
  */
 
-import { StorageKeys } from '@models/storage-keys.interface';
-
 /**
  * This function listen for a click on the plugin icon.
- * If the user hasn't configured the plugin, we redirect them to the Options page.
+ * If the user clicks it, we redirect them to the Options page.
  */
 chrome.browserAction.onClicked.addListener(() => {
-	chrome.storage.sync.get(
-		['token', 'projectIds', 'baseUrl'],
-		(keys: StorageKeys) => {
-			if (!keys.token || !keys.projectIds || !keys.baseUrl) {
-				return chrome.runtime.openOptionsPage();
-			}
-		}
-	);
+	return chrome.runtime.openOptionsPage();
 });
 
 /**

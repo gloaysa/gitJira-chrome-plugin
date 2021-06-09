@@ -6,7 +6,7 @@ reactJS_script.src = "app.js";
 
 foreground_entry_point.appendChild(reactJS_script);
 
-let content = document.getElementById("stalker") || document.getElementById("DETAILS");
+let content = document.getElementById("details-module") || document.getElementById("DETAILS");
 
 if (content) content.parentNode.insertBefore(foreground_entry_point, content.nextSibling);
 

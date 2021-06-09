@@ -4,15 +4,19 @@ import ReactMarkdown from 'react-markdown';
 import { getMrInfo } from '../services/gitlab.service';
 import { Option } from '@models/option.interface';
 import { MergeRequest } from '@models/merge-request.interface';
+import JiraModuleComponent from '@components/JiraModuleComponent';
 
 interface Props {
-	token: string;
-	projectIds: string[];
-	baseUrl: string;
+	config: {
+		token: string;
+		projectIds: string[];
+		baseUrl: string;
+	};
 	jiraTicket: string;
 }
 
-const MergeRequestComponent: React.FunctionComponent<Props> = ({ token, projectIds, baseUrl, jiraTicket }) => {
+const MergeRequestComponent: React.FunctionComponent<Props> = ({ config, jiraTicket }) => {
+	const { token, baseUrl, projectIds } = config;
 	const [mergeRequest, setMergeRequest] = useState<MergeRequest>(null);
 
 	useEffect(() => {
@@ -23,19 +27,21 @@ const MergeRequestComponent: React.FunctionComponent<Props> = ({ token, projectI
 		getMergeRequest();
 	}, [jiraTicket]);
 
+	if (!mergeRequest) return <></>;
+
 	const properties: Option[] = [
-		{ label: 'Author', value: mergeRequest?.author.name },
+		{ label: 'Author', value: mergeRequest.author.name },
 		{
 			label: 'Status',
-			value: `${mergeRequest?.state.toUpperCase()} ${new Date(mergeRequest?.merged_at)?.toLocaleDateString()}`,
+			value: `${mergeRequest.state.toUpperCase()} ${new Date(mergeRequest.merged_at)?.toLocaleDateString()}`,
 		},
-		{ label: 'Reviewers', value: mergeRequest?.reviewers?.map((rev) => rev?.name)?.join(', ') },
-		{ label: 'Merged by', value: mergeRequest?.merged_by?.name },
-		{ label: 'Upvotes', value: mergeRequest?.upvotes },
-		{ label: 'Downvotes', value: mergeRequest?.downvotes },
+		{ label: 'Reviewers', value: mergeRequest.reviewers?.map((rev) => rev?.name)?.join(', ') },
+		{ label: 'Merged by', value: mergeRequest.merged_by?.name },
+		{ label: 'Upvotes', value: mergeRequest.upvotes },
+		{ label: 'Downvotes', value: mergeRequest.downvotes },
 	];
 
-	const displayList = () => {
+	const displayList = (): JSX.Element[] => {
 		return properties.map(({ label, value }, i) => {
 			if (value) {
 				return (
@@ -51,11 +57,9 @@ const MergeRequestComponent: React.FunctionComponent<Props> = ({ token, projectI
 	};
 
 	return (
-		<div className="issue-body-content">
-			<div className="mod-content">
-				<div className="field-ignore-highlight editable-field inactive">
-					<ReactMarkdown className="user-content-block">{mergeRequest?.description}</ReactMarkdown>
-				</div>
+		<JiraModuleComponent moduleName="GitLab Info">
+			<div className="field-ignore-highlight editable-field inactive">
+				<ReactMarkdown className="user-content-block">{mergeRequest.description}</ReactMarkdown>
 			</div>
 			<br />
 
@@ -63,21 +67,27 @@ const MergeRequestComponent: React.FunctionComponent<Props> = ({ token, projectI
 				<ul className="property-list two-cols">{displayList()}</ul>
 			</div>
 
-			<br />
-
-			<div className="aui-buttons">
-				<a
-					className="button aui-style-default aui-button aui-button-primary"
-					target="_blank"
-					href={mergeRequest?.web_url}
-				>
-					See MR in GitLab
-				</a>
+			<div style={styles.button_wrapper}>
+				<div className="aui-buttons">
+					<a
+						className="button aui-style-default aui-button aui-button-primary"
+						target="_blank"
+						href={mergeRequest.web_url}
+					>
+						See MR in GitLab
+					</a>
+				</div>
 			</div>
 
-			<hr />
-		</div>
+		</JiraModuleComponent>
 	);
 };
+
+const styles = {
+	button_wrapper: {
+		display: 'flex',
+		justifyContent: 'flex-end',
+	}
+}
 
 export default MergeRequestComponent;

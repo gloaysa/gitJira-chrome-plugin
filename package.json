@@ -1,6 +1,6 @@
 {
 	"name": "jira-gitlab-integration",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "Visualize the MR that belongs to Jira Ticket",
 	"main": "index.js",
 	"scripts": {

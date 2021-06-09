@@ -22,7 +22,8 @@ chrome.storage.sync.get(['token', 'projectIds', 'baseUrl'], async (keys: Storage
 	const match = url.match(`selectedIssue=([^&]+).*$`) || url.match(`([^/]+)/?$`);
 	const jiraTicket = match ? match[1] : '';
 
-	if (!jiraTicket || !jiraTicket.match('WECOMMERCE')) return;
+	// if (!jiraTicket || !jiraTicket.match('WECOMMERCE')) return;
+	if (!jiraTicket) return;
 
 	if (app)
 		render(

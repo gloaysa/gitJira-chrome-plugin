@@ -14,7 +14,6 @@ export const UserOptions: Record<string, Option> = {
 export const getUserOptions = async (mergeRequest: MergeRequest): Promise<Option[]> => {
 	const optionList = [
 		{ ...UserOptions.Author, value: mergeRequest.author.name },
-		{ ...UserOptions.Description, value: mergeRequest.description },
 		{
 			...UserOptions.Status,
 			value: `${mergeRequest.state.toUpperCase()} ${new Date(mergeRequest.merged_at)?.toLocaleDateString()}`,

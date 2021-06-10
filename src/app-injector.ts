@@ -12,7 +12,7 @@ setTimeout(() => {
 	if (content) content.parentNode.insertBefore(foreground_entry_point, content.nextSibling);
 
 	chrome.runtime.sendMessage('app ready');
-}, 500)
+}, 1000)
 
 
 

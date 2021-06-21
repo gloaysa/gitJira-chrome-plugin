@@ -1,7 +1,7 @@
 npm-debug.log
 node_modules/
-dist/
+plugin/
 tmp/
 .idea/
-dist.zip
-NO+otp.crx
+plugin.zip
+gitjira.crx

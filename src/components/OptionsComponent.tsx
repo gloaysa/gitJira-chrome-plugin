@@ -1,41 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState } from 'react';
+import { StorageKeys } from '@models/storage-keys.interface';
+import { UserOptions } from '../services/user-options.service';
 
-const Options = () => {
-	const [token, setToken] = useState<string>('');
-	const [projectIds, setProjectId] = useState<string>('');
-	const [baseUrl, setBaseUrl] = useState<string>('');
+interface OptionsComponentProps {
+	handleSaveConfiguration: (params: StorageKeys, callback?: () => void) => void;
+	config: StorageKeys;
+}
+
+const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
+	config,
+	handleSaveConfiguration,
+}) => {
+	const [token, setToken] = useState<string>(config.token);
+	const [projectIds, setProjectId] = useState<string>(config.projectIds);
+	const [baseUrl, setBaseUrl] = useState<string>(config.baseUrl);
+	const [jiraPrefix, setJiraPrefix] = useState<string>(config.jiraPrefix);
+	const [userOptions, setUserOptions] = useState<string[]>(config.userOptions || []);
 
 	const [status, setStatus] = useState<string>('');
 
 	const [secretShow, setSecretShow] = useState<boolean>(false);
 
-	useEffect(() => {
-		chrome.storage.sync.get(
-			['token', 'projectIds', 'baseUrl'],
-			(key: { token: string, projectIds: string, baseUrl: string}) => {
-				if (!token) {
-					setToken(key.token);
-					setProjectId(key.projectIds);
-					setBaseUrl(key.baseUrl)
-				}
-			}
-		);
-	});
-
-	const saveOptions = () => {
-		// Saves options to chrome.storage.sync.
-		chrome.storage.sync.set({ token, projectIds, baseUrl }, () => {
+	const saveConfiguration = () => {
+		handleSaveConfiguration({ token, projectIds, baseUrl, jiraPrefix, userOptions }, () => {
 			let timeoutId;
-			const message = {setting: 'saved'};
 
-			chrome.runtime.sendMessage(message, () => {
-				setStatus('Options saved.');
-				timeoutId = setTimeout(() => {
-					setStatus(undefined);
-				}, 1000);
-			});
+			setStatus('Options saved.');
+			timeoutId = setTimeout(() => {
+				setStatus(undefined);
+			}, 1000);
+
 			return () => clearTimeout(timeoutId);
+		});
+	};
+
+	const addOrRemoveOption = (id: string) => {
+		if (userOptions?.some((option) => option === id)) {
+			console.log('remove')
+			return setUserOptions(userOptions?.filter(option => option !== id));
+		}
+		setUserOptions([...userOptions, id]);
+	};
+
+	const displayUserOptions = () => {
+		return Object.keys(UserOptions).map((option) => {
+			return (
+				<div className="field is-centered" key={UserOptions[option].id}>
+					<div className="control">
+						<label className="checkbox">
+							<input
+								type="checkbox"
+								onChange={() => addOrRemoveOption(UserOptions[option].id)}
+								checked={userOptions?.some((optionId) => optionId === UserOptions[option].id)}
+							/>{' '}
+							{UserOptions[option].label}
+						</label>
+					</div>
+				</div>
+			);
 		});
 	};
 
@@ -45,7 +67,11 @@ const Options = () => {
 		}
 		return (
 			<div className="field is-centered">
-				<button className="button is-info is-medium is-fullwidth" onClick={saveOptions} disabled={!token || !projectIds || !baseUrl}>
+				<button
+					className="button is-info is-medium is-fullwidth"
+					onClick={saveConfiguration}
+					disabled={!token || !projectIds || !baseUrl}
+				>
 					Save options
 				</button>
 
@@ -65,7 +91,7 @@ const Options = () => {
 								<div className="card-content">
 									<div className="columns is-mobile is-centered is-vcentered">
 										<div className="column is-narrow">
-											<img src="../images/icon-50.png" alt="GitLab - Jira Integration Configuration Icon" />
+											<img src="assets/images/icon-50.png" alt="GitLab - Jira Integration Configuration Icon" />
 										</div>
 										<div className="column is-narrow">
 											<span className="title">GitLab - Jira Integration Configuration</span>
@@ -73,21 +99,18 @@ const Options = () => {
 									</div>
 
 									<div className="field is-centered">
-
-										<p>
-											This plugin allows you to ...
-										</p>
+										<p>This plugin allows you to ...</p>
 
 										<hr />
 
-										<img src="../images/gitlab-token.png" alt="GitLab - Jira Integration Configuration Icon" />
+										<img src="assets/images/gitlab-token.png" alt="GitLab - Jira Integration Configuration Icon" />
 
 										<p>
-											To get your token, login to GitLab / Preferences / Access Tokens and create a new token with "read_api" access.
-											You can name it whatever you want it. Then, paste your token below.
+											To get your token, login to GitLab / Preferences / Access Tokens and create a new token with
+											"read_api" access. You can name it whatever you want it. Then, paste your token below.
 										</p>
 
-										<br/>
+										<br />
 
 										<label className="label">Token</label>
 										<div className="control has-icons-right">
@@ -95,7 +118,7 @@ const Options = () => {
 												className="input"
 												type={secretShow ? 'text' : 'password'}
 												id="secret"
-												placeholder="SECRET"
+												placeholder="Your personal token"
 												onChange={(event) => setToken(event.target.value)}
 												value={token}
 											/>
@@ -125,7 +148,23 @@ const Options = () => {
 
 									<br />
 
-									<img src="../images/gitlab-projectid.png" alt="GitLab - Jira Integration Configuration Icon" />
+									<label className="label">Jira Prefix</label>
+									<div className="control has-icons-right">
+										<input
+											className="input"
+											type="text"
+											placeholder="JIRA"
+											onChange={(event) => setJiraPrefix(event.target.value)}
+											value={jiraPrefix}
+										/>
+										<p className="help">
+											The Jira project code, it looks like: <code>JIRA-11</code>, put here the name without the dash or numbers.
+										</p>
+									</div>
+
+									<br />
+
+									<img src="assets/images/gitlab-projectid.png" alt="GitLab - Jira Integration Configuration Icon" />
 
 									<p>The project ID can be found at the Details repository page in Gitlab, under the name.</p>
 
@@ -139,8 +178,14 @@ const Options = () => {
 											onChange={(event) => setProjectId(event.target.value)}
 											value={projectIds}
 										/>
-										<p className="help">You can add multiple projects separating them by a coma: <code>1919, 1920</code></p>
+										<p className="help">
+											You can add multiple projects separating them by a coma: <code>1919, 1920</code>
+										</p>
 									</div>
+
+									<br />
+
+									{displayUserOptions()}
 
 									<br />
 
@@ -181,9 +226,4 @@ const Options = () => {
 	);
 };
 
-ReactDOM.render(
-	<React.StrictMode>
-		<Options />
-	</React.StrictMode>,
-	document.getElementById('root')
-);
+export default OptionsComponent;

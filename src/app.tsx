@@ -10,16 +10,22 @@ let token: string;
 let projectIds: string[];
 let baseUrl: string;
 let jiraPrefix: string;
+let collapsed: boolean;
 
-chrome.storage.sync.get(['token', 'projectIds', 'baseUrl', 'jiraPrefix'], async (keys: StorageKeys) => {
+chrome.storage.sync.get(['token', 'projectIds', 'baseUrl', 'jiraPrefix', 'collapsed'], async (keys: StorageKeys) => {
+	if (typeof  keys.projectIds === 'string') {
+		// this conversion is necessary because Chrome storage doesn't store arrays
+		keys.projectIds = (keys.projectIds as string).split(',');
+	}
 	if (!token) {
 		token = keys.token;
-		projectIds = keys.projectIds?.replace(/\s/g, '')?.split(',');
+		projectIds = keys.projectIds;
 		baseUrl = keys.baseUrl;
 		jiraPrefix = keys.jiraPrefix;
+		collapsed = keys.collapsed;
 	}
 
-	const config = { token, projectIds, baseUrl };
+	const config: StorageKeys = { token, projectIds, baseUrl, collapsed, jiraPrefix };
 
 	const url = location.href;
 

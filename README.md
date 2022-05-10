@@ -11,7 +11,7 @@ Display GitLab's MR info from its Jira Ticket
   - ./models: available interfaces
   - ./services: app services
   - ./utils: different functions and tools
-- dist: Chrome Extension directory
+- plugin: (after build) Chrome Extension directory
 
 ## Setup
 

@@ -9,7 +9,7 @@ export interface MergeRequest {
 	state: 'opened' | 'closed' | 'locked' | 'merged';
 	created_at: string;
 	updated_at: string;
-	merged_by: Author;
+	merge_user: Author;
 	merged_at: string;
 	closed_by: string;
 	closed_at: string;

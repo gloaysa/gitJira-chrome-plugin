@@ -7,22 +7,20 @@ interface OptionsComponentProps {
 	config: StorageKeys;
 }
 
-const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
-	config,
-	handleSaveConfiguration,
-}) => {
+const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({ config, handleSaveConfiguration }) => {
 	const [token, setToken] = useState<string>(config.token);
-	const [projectIds, setProjectId] = useState<string>(config.projectIds);
+	const [projectIds, setProjectId] = useState<string[]>(config.projectIds);
 	const [baseUrl, setBaseUrl] = useState<string>(config.baseUrl);
 	const [jiraPrefix, setJiraPrefix] = useState<string>(config.jiraPrefix);
 	const [userOptions, setUserOptions] = useState<string[]>(config.userOptions || []);
+	const [collapsed, setCollapsed] = useState<boolean>(config.collapsed || false);
 
 	const [status, setStatus] = useState<string>('');
 
 	const [secretShow, setSecretShow] = useState<boolean>(false);
 
 	const saveConfiguration = () => {
-		handleSaveConfiguration({ token, projectIds, baseUrl, jiraPrefix, userOptions }, () => {
+		handleSaveConfiguration({ token, projectIds, baseUrl, jiraPrefix, userOptions: userOptions, collapsed }, () => {
 			let timeoutId;
 
 			setStatus('Options saved.');
@@ -34,10 +32,13 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 		});
 	};
 
+	const handleProjectIds = (newProjectIds: string) => {
+		setProjectId(newProjectIds.replace(/\s/g, '')?.split(','));
+	};
+
 	const addOrRemoveOption = (id: string) => {
 		if (userOptions?.some((option) => option === id)) {
-			console.log('remove')
-			return setUserOptions(userOptions?.filter(option => option !== id));
+			return setUserOptions(userOptions?.filter((option) => option !== id));
 		}
 		setUserOptions([...userOptions, id]);
 	};
@@ -158,7 +159,8 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 											value={jiraPrefix}
 										/>
 										<p className="help">
-											The Jira project code, it looks like: <code>JIRA-11</code>, put here the name without the dash or numbers.
+											The Jira project code, it looks like: <code>JIRA-11</code>, put here the name without the dash or
+											numbers.
 										</p>
 									</div>
 
@@ -175,7 +177,7 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 											type="text"
 											id="secret"
 											placeholder="1466"
-											onChange={(event) => setProjectId(event.target.value)}
+											onChange={(event) => handleProjectIds(event.target.value)}
 											value={projectIds}
 										/>
 										<p className="help">
@@ -186,6 +188,21 @@ const OptionsComponent: React.FunctionComponent<OptionsComponentProps> = ({
 									<br />
 
 									{displayUserOptions()}
+
+									<br />
+
+									<div className="field is-centered">
+										<div className="control">
+											<label className="checkbox">
+												<input
+													type="checkbox"
+													onChange={($event) => setCollapsed($event.target.checked)}
+													checked={collapsed}
+												/>{' '}
+												Collapse GitLab information in Jira by default (recommended if showing description is activated)
+											</label>
+										</div>
+									</div>
 
 									<br />
 

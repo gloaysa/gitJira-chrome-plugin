@@ -12,7 +12,14 @@ import { StorageKeys } from '@models/storage-keys.interface';
  */
 const saveOptions = (config: StorageKeys, callback) => {
 	chrome.storage.sync.set(
-		{ token: config.token, projectIds: config.projectIds, baseUrl: config.baseUrl, jiraPrefix: config.jiraPrefix, userOptions: config.userOptions },
+		{
+			token: config.token,
+			projectIds: config.projectIds,
+			baseUrl: config.baseUrl,
+			jiraPrefix: config.jiraPrefix,
+			userOptions: config.userOptions,
+			collapsed: config.collapsed
+		},
 		() => callback()
 	);
 };
@@ -20,6 +27,6 @@ const saveOptions = (config: StorageKeys, callback) => {
 /**
  * Gets the configuration from Chrome Storage and renders OptionsComponent
  */
-chrome.storage.sync.get(['token', 'projectIds', 'baseUrl', 'jiraPrefix', 'userOptions'], (keys: StorageKeys) => {
+chrome.storage.sync.get(['token', 'projectIds', 'baseUrl', 'jiraPrefix', 'userOptions', 'collapsed'], (keys: StorageKeys) => {
 	render(<OptionsComponent config={keys} handleSaveConfiguration={saveOptions} />, document.querySelector('#options'));
 });

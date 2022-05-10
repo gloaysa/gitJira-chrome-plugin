@@ -18,8 +18,6 @@ const MergeRequestComponent: React.FunctionComponent<Props> = ({ config, jiraTic
 	const [mergeRequest, setMergeRequest] = useState<MergeRequest>(null);
 	const [userOptions, setUserOptions] = useState<Option[]>([]);
 
-	console.log(config.projectIds)
-
 	useEffect(() => {
 		const getMergeRequest = async () => {
 			const mergeRequests: MergeRequest[] = await getMrInfo(jiraTicket, token, baseUrl, projectIds);

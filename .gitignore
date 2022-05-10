@@ -5,3 +5,4 @@ tmp/
 .idea/
 plugin.zip
 gitjira.crx
+.DS_Store

@@ -22,5 +22,7 @@ export const getMrInfo = async (
 		if (!response) return [];
 
 		return response.json();
-	} catch (e) {}
+	} catch (e) {
+		return [];
+	}
 };
